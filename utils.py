@@ -30,19 +30,21 @@ class Grid:
 
     def generate_random_mine_positions(self) -> None:
         positions = list(itertools.product(range(self.height), range(self.width)))
-        self.mine_positions = random.sample(positions, self.nb_mines)
+        self.mine_positions = set(random.sample(positions, self.nb_mines))
 
     def build_grid_content(self) -> None:
         self.generate_random_mine_positions()
         self.content = np.zeros((self.height, self.width), int)
-        for x in itertools.product(
+        for pos in itertools.product(
             itertools.product(range(self.height), range(self.width))
         ):
-            h, w = x[0]
-            if x[0] in self.mine_positions:
+            h, w = pos[0]
+            if pos[0] in self.mine_positions:
                 self.content[h, w] = -1
             else:
-                x = 0
+                self.content[h, w] = len(
+                    self.mine_positions.intersection(self.list_neighbors(pos[0]))
+                )
 
     def list_neighbors(self, pos: tuple) -> list:
         neighbors = set()
@@ -63,6 +65,5 @@ class Grid:
 
 
 if __name__ == "__main__":
-    g = Grid(**levels["beginner"])
+    g = Grid(**levels["intermediate"])
     g.build_grid_content()
-    g.list_neighbors((0, 0))
