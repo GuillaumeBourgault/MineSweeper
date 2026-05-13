@@ -1,5 +1,6 @@
 import pytest
-import utils
+
+from MineSweeper import utils
 
 
 @pytest.fixture

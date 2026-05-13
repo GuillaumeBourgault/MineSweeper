@@ -1,6 +1,7 @@
-import numpy as np
-import random
 import itertools
+import random
+
+import numpy as np
 
 levels = {
     "beginner": {
@@ -26,14 +27,13 @@ class Grid:
         self.width = width
         self.height = height
         self.nb_mines = nb_mines
-        self.bottom_right_corner = np.array([self.height, self.width])
+        self.generate_random_mine_positions()
 
     def generate_random_mine_positions(self) -> None:
         positions = list(itertools.product(range(self.height), range(self.width)))
         self.mine_positions = set(random.sample(positions, self.nb_mines))
 
     def build_grid_content(self) -> None:
-        self.generate_random_mine_positions()
         self.content = np.zeros((self.height, self.width), int)
         for pos in itertools.product(
             itertools.product(range(self.height), range(self.width))
@@ -65,5 +65,17 @@ class Grid:
 
 
 if __name__ == "__main__":
-    g = Grid(**levels["intermediate"])
+    # g = Grid(**levels["intermediate"])
+    g = Grid(5, 5, 0)
+    g.mine_positions = {
+        (1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 1),
+        (2, 3),
+        (3, 1),
+        (3, 2),
+        (3, 3),
+    }
     g.build_grid_content()
+    print(g.content)

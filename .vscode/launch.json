@@ -5,7 +5,7 @@
             "name": "Run my script",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/utils.py",
+            "program": "${workspaceFolder}/src/MineSweeper/utils.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
