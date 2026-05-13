@@ -51,7 +51,7 @@ class Grid:
         return len(self.mines.intersection(self.list_neighbors(pos[0])))
 
     def count_neighbor_marked_mines(self, pos: tuple) -> int:
-        return len(self.marked_mines.intersection(self.list_neighbors(pos[0])))
+        return len(self.marked_mines.intersection(self.list_neighbors(pos)))
 
     def list_neighbors(self, pos: tuple) -> set:
         neighbors = set()
@@ -97,36 +97,36 @@ class Grid:
             return
         if pos not in self.uncovered:
             if pos not in self.marked_mines:
-                self.add_mine(pos)
+                self.mark_mine(pos)
             else:
-                self.remove_mine(pos)
+                self.unmark_mine(pos)
             return
         # cell is uncovered
-        if not self.content[*pos]:
+        if not bool(self.content[*pos]):
             # clicking on a zero cell does nothing
             return
         # cell has a number
         covered_and_unmarked_neighbors = (
-            self.list_neighbors().intersection(self.uncovered)
+            self.list_neighbors(pos).difference(self.uncovered)
         ).difference(self.marked_mines)
-        if self.count_neighbor_marked_mines() != self.content[*pos]:
+        if self.count_neighbor_marked_mines(pos) != self.content[*pos]:
             # if cell not saturated, state remains the same
-            to_blink = (self.list_neighbors().intersection(self.uncovered)).difference(
-                self.marked_mines
-            )
+            to_blink = (
+                self.list_neighbors(pos).intersection(self.uncovered)
+            ).difference(self.marked_mines)
             # TODO: blink covered_and_unmarked_neighbors
             return
         # equivalent to left-click on covered_and_unmarked_neighbors
         for neighbor in covered_and_unmarked_neighbors:
             self.left_click_on_grid(neighbor)
 
-    def add_mine(self, pos: tuple) -> None:
-        assert pos not in self.market_mines
+    def mark_mine(self, pos: tuple) -> None:
+        assert pos not in self.marked_mines
         self.marked_mines.add(pos)
         # TODO: mark mine on grid
 
-    def remove_mine(self, pos: tuple) -> None:
-        assert pos in self.market_mines
+    def unmark_mine(self, pos: tuple) -> None:
+        assert pos in self.marked_mines
         self.marked_mines.remove(pos)
         # TODO: remove mine on grid
 
@@ -135,6 +135,7 @@ if __name__ == "__main__":
     g = Grid(3, 3, 0)
     g.mines = {(0, 0)}
     g.build_grid_content()
-    g.left_click_on_grid((1, 0))
-    print(g.content)
-    print(g.uncovered)
+    g.left_click_on_grid((1, 1))
+    g.right_click_on_grid((0, 0))
+    g.right_click_on_grid((1, 1))
+    x = 0

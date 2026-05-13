@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from MineSweeper import utils
@@ -36,3 +35,31 @@ class TestLeftClick:
             ]
         )
         assert grid_3.uncovered == expected
+
+
+class TestRightClick:
+    def test_mark_mine(self, grid_3):
+        grid_3.right_click_on_grid((0, 0))
+        assert (0, 0) in grid_3.marked_mines
+
+    def test_unmark_mine(self, grid_3):
+        grid_3.right_click_on_grid((0, 0))
+        grid_3.right_click_on_grid((0, 0))
+        assert (0, 0) not in grid_3.marked_mines
+
+    def test_unsaturated(self, grid_3):
+        grid_3.left_click_on_grid((1, 1))
+        grid_3.right_click_on_grid((1, 1))
+        assert grid_3.uncovered == {(1, 1)}
+
+    def test_saturated_game_over(self, grid_3):
+        grid_3.left_click_on_grid((1, 1))
+        grid_3.right_click_on_grid((1, 0))
+        grid_3.right_click_on_grid((1, 1))
+        assert grid_3.game_over
+
+    def test_saturated_ok(self, grid_3):
+        grid_3.left_click_on_grid((1, 1))
+        grid_3.right_click_on_grid((0, 0))
+        grid_3.right_click_on_grid((1, 1))
+        assert len(grid_3.uncovered) == 8
