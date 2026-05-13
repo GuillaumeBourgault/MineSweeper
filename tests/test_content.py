@@ -7,7 +7,7 @@ from MineSweeper import utils
 @pytest.fixture
 def grid_3():
     g = utils.Grid(3, 3, 0)
-    g.mine_positions = {(1, 1)}
+    g.mines = {(1, 1)}
     g.build_grid_content()
     return g
 
@@ -15,7 +15,7 @@ def grid_3():
 @pytest.fixture
 def grid_5():
     g = utils.Grid(5, 5, 0)
-    g.mine_positions = {
+    g.mines = {
         (1, 1),
         (1, 2),
         (1, 3),
