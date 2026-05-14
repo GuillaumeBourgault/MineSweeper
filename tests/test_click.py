@@ -63,3 +63,13 @@ class TestRightClick:
         grid_3.right_click_on_grid((0, 0))
         grid_3.right_click_on_grid((1, 1))
         assert len(grid_3.uncovered) == 8
+
+
+class TestSuccess:
+    def test_not_ok(self, grid_3):
+        grid_3.check_success()
+        assert not grid_3.success
+
+    def test_ok(self, grid_3):
+        grid_3.left_click_on_grid((0, 2))
+        assert grid_3.success

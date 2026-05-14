@@ -26,15 +26,18 @@ class Grid:
     def __init__(self, width: int, height: int, nb_mines: int):
         self.width = width
         self.height = height
-        self.nb_mines = nb_mines
-        self.generate_random_mines()
+        self.generate_random_mines(nb_mines)
         self.uncovered = set()
         self.marked_mines = set()
         self.game_over = False
+        self.nb_cells = width * height
+        self.success = False
 
-    def generate_random_mines(self) -> None:
+    def generate_random_mines(self, nb_mines: int) -> None:
+        if not nb_mines:
+            return
         positions = list(itertools.product(range(self.height), range(self.width)))
-        self.mines = set(random.sample(positions, self.nb_mines))
+        self.mines = set(random.sample(positions, nb_mines))
 
     def build_grid_content(self) -> None:
         self.content = np.zeros((self.height, self.width), int)
@@ -80,15 +83,29 @@ class Grid:
         self.uncovered.add(pos)
         if self.content[*pos]:
             # TODO: show number on grid
+            self.check_success()
             return
         # recursively check all covered neighbors
         covered_neighbors = self.list_neighbors(pos).difference(self.uncovered)
         for neighbor in covered_neighbors:
             self.left_click_on_grid(neighbor)
+            self.check_success()
+            if self.success:
+                return
 
-    def explode(self):
+    def check_success(self):
+        if self.nb_cells - len(self.uncovered) != len(self.mines):
+            return
+        if self.success:
+            return
+        print("success!")
+        # TODO: show on grid
         self.game_over = True
-        # TODO: show explosion
+        self.success = True
+
+    def explode(self) -> None:
+        self.game_over = True
+        # TODO: show explosion on grid
         print("boum!")
 
     def right_click_on_grid(self, pos: tuple) -> None:
@@ -135,7 +152,5 @@ if __name__ == "__main__":
     g = Grid(3, 3, 0)
     g.mines = {(0, 0)}
     g.build_grid_content()
-    g.left_click_on_grid((1, 1))
-    g.right_click_on_grid((0, 0))
-    g.right_click_on_grid((1, 1))
+    g.left_click_on_grid((0, 2))
     x = 0
